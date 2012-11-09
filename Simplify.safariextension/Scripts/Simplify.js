@@ -77,15 +77,15 @@ var Simplify = function(player_name)
 		//Sending stored data
 		for (var key in offline_cache)
 		{
-			if (obj.hasOwnProperty(key))
+			if (offline_cache.hasOwnProperty(key))
 			{
 				internal_send(parseInt(key), obj[key]);
-				delete obj[key];
+				//delete obj[key];
 			}
 		}
 
 		//Clearing cache
-		offline_cache = {};
+		//offline_cache = {};
 	}
 
 	//Delivering message to its recipients
@@ -107,6 +107,13 @@ var Simplify = function(player_name)
 
 			//Extracting our callbacks
 			var callbacks_list = callbacks[message_title];
+
+			//Checking if we should shut down our web socket
+			if (message_title == Simplify.MESSAGE_DID_SERVER_SHUTDOWN)
+			{
+				clearInterval(connection_polling_timer);
+				connection_polling_timer = setInterval(internal_connect, 6000);
+			}
 
 			//They should be presented in order to process
 			if (typeof callbacks_list == "undefined") return;
@@ -146,20 +153,21 @@ var Simplify = function(player_name)
 	Simplify.PLAYBACK_STATE_STOPPED = 3;
 
 	//Outgoing events enumeration
-	Simplify.MESSAGE_PLAYER_START			  	= 1;
-	Simplify.MESSAGE_PLAYED_END				  	= 2;
+	Simplify.MESSAGE_PLAYER_START			  		= 1;
+	Simplify.MESSAGE_PLAYER_END				  	= 2;
 	Simplify.MESSAGE_CHANGE_PLAYBACK_STATE 	= 3;
-	Simplify.MESSAGE_CHANGE_TRACK      		= 4;
-	Simplify.MESSAGE_CHANGE_ARTWORK 			= 5;
-	Simplify.MESSAGE_CHANGE_TRACK_POSITION	= 6;
+	Simplify.MESSAGE_CHANGE_TRACK      			= 4;
+	Simplify.MESSAGE_CHANGE_ARTWORK 				= 5;
+	Simplify.MESSAGE_CHANGE_TRACK_POSITION		= 6;
 	Simplify.MESSAGE_CHANGE_VOLUME				= 7;
 
 	//Incoming events enumeration
-	Simplify.MESSAGE_DID_SELECT_PREVIOUS_TRACK = 100;
+	Simplify.MESSAGE_DID_SELECT_PREVIOUS_TRACK 	= 100;
 	Simplify.MESSAGE_DID_SELECT_NEXT_TRACK 		= 101;
 	Simplify.MESSAGE_DID_CHANGE_PLAYBACK_STATE	= 102;
-	Simplify.MESSAGE_DID_CHANGE_VOLUME			= 103;
+	Simplify.MESSAGE_DID_CHANGE_VOLUME				= 103;
 	Simplify.MESSAGE_DID_CHANGE_TRACK_POSITION	= 104;
+	Simplify.MESSAGE_DID_SERVER_SHUTDOWN			= 105;
 
 	/* External API: server properties */
 
@@ -173,7 +181,7 @@ var Simplify = function(player_name)
 	//Use this method to tell Simplify that current player was stopped (for example, when tab with player closed)
 	this.closeCurrentPlayer = function()
 	{
-		internal_send(Simplify.MESSAGE_PLAYED_END);
+		internal_send(Simplify.MESSAGE_PLAYER_END);
 	}
 
 	//Notifies Simplify about changed playback state
@@ -237,9 +245,9 @@ var Simplify = function(player_name)
 	/*
 		List of available events without supplied arguments:
 		
-		MESSAGE_DID_SELECT_PREVIOUS_TRACK 	- track changed to previous one
+		MESSAGE_DID_SELECT_PREVIOUS_TRACK	- track changed to previous one
 		MESSAGE_DID_SELECT_NEXT_TRACK			- track changed to next one
-		MESSAGE_DID_CHANGE_PLAYBACK_STATE 	- playback state changed (use 'state' key to get new state)
+		MESSAGE_DID_CHANGE_PLAYBACK_STATE	- playback state changed (use 'state' key to get new state)
 
 		List of available events with arguments:
 
