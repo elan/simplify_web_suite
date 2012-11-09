@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript">
+			//Adding content scripts for supported players
+			safari.extension.addContentScriptFromURL(safari.extension.baseURI + "Clients/Vk.js", ["http://vk.com/*"], ["http://vk.com/notifier*"], true);
+		</script>
+	</head>
+</html>
