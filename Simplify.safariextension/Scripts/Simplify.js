@@ -9,9 +9,6 @@ var Simplify = function(player_name)
 	//Storing our webscoket reference
 	var connection = null, connection_polling_timer = null, callbacks = {}, offline_cache = {};
 
-	//Internal message name key
-	var internal_message_key = "__simplify_message_name__";
-
 	//This methods looks for running instance of Simplify server and connects to it in case
 	var internal_connect = function()
 	{
@@ -20,15 +17,25 @@ var Simplify = function(player_name)
 		//Stopping polling when connected
 		connection.onopen = function()
 		{
-			clearInterval(connection_polling_timer);
+			console.log("Connected to Simplify. Flushing cache. So it goes.");
+			clearTimeout(connection_polling_timer);
 			internal_flush_offline_cache();
+		}
+
+		//On closed connection trying to restore our polling
+		connection.onclose = function()
+		{
+			delete connection;
+			clearTimeout(connection_polling_timer);
+			connection_polling_timer = setTimeout(internal_connect, 4000);
 		}
 
 		//Polling again on error
 		connection.onerror = function()
 		{
-			clearInterval(connection_polling_timer);
-			connection_polling_timer = setInterval(internal_connect, 6000);
+			delete connection;
+			clearTimeout(connection_polling_timer);
+			connection_polling_timer = setTimeout(internal_connect, 4000);
 		}
 
 		//Receiving messages
@@ -41,22 +48,24 @@ var Simplify = function(player_name)
 	//Sending message to the server with JSON
 	var internal_send = function(name, data)
 	{
+		//Caching everything important even if we are connected
+		//We should be able to restore everything if Simplify is relaunched
+		offline_cache[name.toString()] = data;
+
 		//Only sending data if connection has been opened earlier
-		//Caching everything important if we are not connected
 		if (connection == null || connection.readyState != WebSocket.OPEN) 
 		{
-			offline_cache[name.toString()] = data;
 			return;
 		}
 
 		//Should we send only message title or message title with some body?
 		if (data == null)
 		{
-			data = {internal_message_key : name};
+			data = {"__simplify_message_name__" : name};
 		}
 		else
 		{
-			data[internal_message_key] = name;
+			data["__simplify_message_name__"] = name;
 		}
 
 		//Sending everything as a JSON string
@@ -64,14 +73,13 @@ var Simplify = function(player_name)
 	}
 
 	//Sending offline cache when connected for the first time
-	internal_flush_offline_cache = function()
+	var internal_flush_offline_cache = function()
 	{
 		//Firstly we should set current player
 		//This have to be sent before any other commands
 		if (offline_cache[Simplify.MESSAGE_PLAYER_START.toString()] != null)
 		{
 			internal_send(Simplify.MESSAGE_PLAYER_START, offline_cache[Simplify.MESSAGE_PLAYER_START.toString()]);
-			delete offline_cache[Simplify.MESSAGE_PLAYER_START.toString()];
 		}
 
 		//Sending stored data
@@ -79,8 +87,8 @@ var Simplify = function(player_name)
 		{
 			if (offline_cache.hasOwnProperty(key))
 			{
-				internal_send(parseInt(key), obj[key]);
-				//delete obj[key];
+				console.log("Restoring '" + key + "' from cache.");
+				internal_send(parseInt(key), offline_cache[key]);
 			}
 		}
 
@@ -89,7 +97,7 @@ var Simplify = function(player_name)
 	}
 
 	//Delivering message to its recipients
-	internal_deliver_message = function(raw_message)
+	var internal_deliver_message = function(raw_message)
 	{
 		try
 		{
@@ -97,23 +105,23 @@ var Simplify = function(player_name)
 			var message = JSON.parse(raw_message);
 
 			//Extracting message title
-			var message_title = message[internal_message_key];
+			var message_title = message["__simplify_message_name__"];
 
 			//It should always be presented
 			if (message_title == null) return;
 
 			//Removing it from the message body
-			delete message[internal_message_key];
+			delete message["__simplify_message_name__"];
 
 			//Extracting our callbacks
 			var callbacks_list = callbacks[message_title];
 
 			//Checking if we should shut down our web socket
-			if (message_title == Simplify.MESSAGE_DID_SERVER_SHUTDOWN)
-			{
-				clearInterval(connection_polling_timer);
-				connection_polling_timer = setInterval(internal_connect, 6000);
-			}
+			//if (message_title == Simplify.MESSAGE_DID_SERVER_SHUTDOWN)
+			//{
+			//	clearInterval(connection_polling_timer);
+			//	connection_polling_timer = setInterval(internal_connect, 6000);
+			//}
 
 			//They should be presented in order to process
 			if (typeof callbacks_list == "undefined") return;
@@ -143,7 +151,7 @@ var Simplify = function(player_name)
 	//Connection polling 
 	//This will check if Simplify is running 
 	//If it founds Simplify, it connects to it and shuts down polling
-	connection_polling_timer = setInterval(internal_connect, 6000), internal_connect();
+	internal_connect();
 
 	/* Public enumerations */
 
@@ -169,7 +177,11 @@ var Simplify = function(player_name)
 	Simplify.MESSAGE_DID_CHANGE_TRACK_POSITION	= 104;
 	Simplify.MESSAGE_DID_SERVER_SHUTDOWN			= 105;
 
-	/* External API: server properties */
+	//Incoming requests enumeration
+	Simplify.MESSAGE_REQUEST_VOLUME				= 300;
+	Simplify.MESSAGE_REQUEST_TRACK_POSITION 	= 301;
+
+	/* External API: setting Simplify properties */
 
 	//Notifies about the current player title
 	this.setCurrentPlayer = function(name)
@@ -227,20 +239,6 @@ var Simplify = function(player_name)
 		internal_send(Simplify.MESSAGE_CHANGE_ARTWORK, {"uri" : uri});
 	}
 
-	//Sets current track position
-	//The 'position' value must be provided in seconds
-	this.setTrackPosition = function(position)
-	{
-		internal_send(Simplify.MESSAGE_CHANGE_TRACK_POSITION, {"amount" : position});
-	}
-
-	//Sets current volume
-	//The 'amount' value must be an integer between 0 and 100
-	this.setVolume = function(amount)
-	{
-		internal_send(Simplify.MESSAGE_CHANGE_VOLUME, {"amount" : amount})
-	}
-
 	/* External API: client events that can be received from Simplify */
 	/*
 		List of available events without supplied arguments:
@@ -262,6 +260,43 @@ var Simplify = function(player_name)
 	this.bind = function(name, callback)
 	{
 		internal_bind_event(name, callback);
+		return this;
+	}
+
+	//Special event from server: requested current volume
+	//You should provide a callback function that will return a value of current volume
+	this.bindToVolumeRequest = function(callback)
+	{
+		if (typeof callback == "undefined") return;
+
+		//Binding to our message
+		this.bind(Simplify.MESSAGE_REQUEST_VOLUME, function(message)
+		{
+			//We should not modify our message (it contains important values for response handling)
+			message["value"] = callback();
+
+			//Sending outgoing message with response
+			internal_send(Simplify.MESSAGE_REQUEST_VOLUME, message);
+		})
+
+		return this;
+	}
+
+	//Special event from server: requested current track position
+	this.bindToTrackPositionRequest = function(callback)
+	{
+		if (typeof callback == "undefined") return;
+
+		//Binding to our message
+		this.bind(Simplify.MESSAGE_REQUEST_TRACK_POSITION, function(message)
+		{
+			//We should not modify our message (it contains important values for response handling)
+			message["value"] = callback();
+
+			//Sending outgoing message with response
+			internal_send(Simplify.MESSAGE_REQUEST_TRACK_POSITION, message);
+		})
+
 		return this;
 	}
 
