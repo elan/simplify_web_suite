@@ -4,7 +4,8 @@
 		<script type="text/javascript" src="safari-extension://Scripts/Simplify.js"></script>
 		<script type="text/javascript">
 			//Storing urls of application that we want to handle
-			var whitelist = ["http://vk.com/*", "https://vk.com/*"];
+			var vk_sites = ["http://vk.com/*", "https://vk.com/*"];
+			var deezer_sites = ["http://deezer.com/*", "http://www.deezer.com/*"];
 
 			//Injecting script to the page to access page-defined variables and functions
 			var inject_script = function(uri, whitelist)
@@ -16,10 +17,12 @@
 			}
 
 			//Loading Simplify base class
-			inject_script("Scripts/Simplify.js", whitelist);
+			inject_script("Scripts/Simplify.js", vk_sites.concat(deezer_sites));
 
 			//Handling Vkontakte music player 
-			inject_script("Scripts/Vk.js", whitelist);
+			inject_script("Scripts/Vk.js", vk_sites);
+			//Handling Deezer player
+			inject_script("Scripts/Deezer.js", deezer_sites);
 		</script>
 	</head>
 </html>

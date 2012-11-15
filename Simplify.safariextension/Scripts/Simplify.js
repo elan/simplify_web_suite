@@ -116,13 +116,6 @@ var Simplify = function(player_name)
 			//Extracting our callbacks
 			var callbacks_list = callbacks[message_title];
 
-			//Checking if we should shut down our web socket
-			//if (message_title == Simplify.MESSAGE_DID_SERVER_SHUTDOWN)
-			//{
-			//	clearInterval(connection_polling_timer);
-			//	connection_polling_timer = setInterval(internal_connect, 6000);
-			//}
-
 			//They should be presented in order to process
 			if (typeof callbacks_list == "undefined") return;
 
@@ -152,6 +145,7 @@ var Simplify = function(player_name)
 	//This will check if Simplify is running 
 	//If it founds Simplify, it connects to it and shuts down polling
 	internal_connect();
+	internal_bind_event(Simplify.MESSAGE_DID_REQUEST_GOD, function() { internal_flush_offline_cache(); });
 
 	/* Public enumerations */
 
@@ -175,7 +169,8 @@ var Simplify = function(player_name)
 	Simplify.MESSAGE_DID_CHANGE_PLAYBACK_STATE	= 102;
 	Simplify.MESSAGE_DID_CHANGE_VOLUME				= 103;
 	Simplify.MESSAGE_DID_CHANGE_TRACK_POSITION	= 104;
-	Simplify.MESSAGE_DID_SERVER_SHUTDOWN			= 105;
+	Simplify.MESSAGE_DID_REQUEST_GOD					= 105;
+	Simplify.MESSAGE_DID_SERVER_SHUTDOWN			= 106;
 
 	//Incoming requests enumeration
 	Simplify.MESSAGE_REQUEST_VOLUME				= 300;
@@ -235,7 +230,7 @@ var Simplify = function(player_name)
 	//You can supply nil and Simplify will try to find artwork on its own 
 	this.setCurrentArtwork = function(uri)
 	{
-		if (uri == null) uri = "urn:lastfm";
+		if (uri == null) uri = "urn:simplify";
 		internal_send(Simplify.MESSAGE_CHANGE_ARTWORK, {"uri" : uri});
 	}
 
