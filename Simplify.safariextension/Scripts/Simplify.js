@@ -68,6 +68,9 @@ var Simplify = function(player_name)
 			data["__simplify_message_name__"] = name;
 		}
 
+		//Attaching important for server information regarding current client
+		data["__simplify_message_client_identifier__"] = location.host;
+
 		//Sending everything as a JSON string
  		connection.send(JSON.stringify(data));
 	}
@@ -85,7 +88,7 @@ var Simplify = function(player_name)
 		//Sending stored data
 		for (var key in offline_cache)
 		{
-			if (offline_cache.hasOwnProperty(key))
+			if (offline_cache.hasOwnProperty(key) && key != Simplify.MESSAGE_PLAYER_START.toString())
 			{
 				console.log("Restoring '" + key + "' from cache.");
 				internal_send(parseInt(key), offline_cache[key]);
@@ -145,43 +148,43 @@ var Simplify = function(player_name)
 	//This will check if Simplify is running 
 	//If it founds Simplify, it connects to it and shuts down polling
 	internal_connect();
-	internal_bind_event(Simplify.MESSAGE_DID_REQUEST_GOD, function() { internal_flush_offline_cache(); });
 
 	/* Public enumerations */
 
 	//Playback state enumeration
-	Simplify.PLAYBACK_STATE_PLAYING = 0;
-	Simplify.PLAYBACK_STATE_PAUSED  = 1;
-	Simplify.PLAYBACK_STATE_STOPPED = 3;
+	Simplify.PLAYBACK_STATE_PLAYING = "0";
+	Simplify.PLAYBACK_STATE_PAUSED  = "1";
+	Simplify.PLAYBACK_STATE_STOPPED = "3";
 
 	//Outgoing events enumeration
-	Simplify.MESSAGE_PLAYER_START			  		= 1;
-	Simplify.MESSAGE_PLAYER_END				  	= 2;
-	Simplify.MESSAGE_CHANGE_PLAYBACK_STATE 	= 3;
-	Simplify.MESSAGE_CHANGE_TRACK      			= 4;
-	Simplify.MESSAGE_CHANGE_ARTWORK 				= 5;
-	Simplify.MESSAGE_CHANGE_TRACK_POSITION		= 6;
-	Simplify.MESSAGE_CHANGE_VOLUME				= 7;
+	Simplify.MESSAGE_PLAYER_START			  		= "1";
+	Simplify.MESSAGE_PLAYER_END				  	= "2";
+	Simplify.MESSAGE_CHANGE_PLAYBACK_STATE 	= "3";
+	Simplify.MESSAGE_CHANGE_TRACK      			= "4";
+	Simplify.MESSAGE_CHANGE_ARTWORK 				= "5";
+	Simplify.MESSAGE_CHANGE_TRACK_POSITION		= "6";
+	Simplify.MESSAGE_CHANGE_VOLUME				= "7";
 
 	//Incoming events enumeration
-	Simplify.MESSAGE_DID_SELECT_PREVIOUS_TRACK 	= 100;
-	Simplify.MESSAGE_DID_SELECT_NEXT_TRACK 		= 101;
-	Simplify.MESSAGE_DID_CHANGE_PLAYBACK_STATE	= 102;
-	Simplify.MESSAGE_DID_CHANGE_VOLUME				= 103;
-	Simplify.MESSAGE_DID_CHANGE_TRACK_POSITION	= 104;
-	Simplify.MESSAGE_DID_REQUEST_GOD					= 105;
-	Simplify.MESSAGE_DID_SERVER_SHUTDOWN			= 106;
+	Simplify.MESSAGE_DID_SELECT_PREVIOUS_TRACK 	= "100";
+	Simplify.MESSAGE_DID_SELECT_NEXT_TRACK 		= "101";
+	Simplify.MESSAGE_DID_CHANGE_PLAYBACK_STATE	= "102";
+	Simplify.MESSAGE_DID_CHANGE_VOLUME				= "103";
+	Simplify.MESSAGE_DID_CHANGE_TRACK_POSITION	= "104";
+	Simplify.MESSAGE_DID_REQUEST_GOD					= "105";
+	Simplify.MESSAGE_DID_SERVER_SHUTDOWN			= "106";
 
 	//Incoming requests enumeration
-	Simplify.MESSAGE_REQUEST_VOLUME				= 300;
-	Simplify.MESSAGE_REQUEST_TRACK_POSITION 	= 301;
+	Simplify.MESSAGE_REQUEST_VOLUME				= "300";
+	Simplify.MESSAGE_REQUEST_TRACK_POSITION 	= "301";
 
 	/* External API: setting Simplify properties */
 
 	//Notifies about the current player title
 	this.setCurrentPlayer = function(name)
 	{
-		internal_send(Simplify.MESSAGE_PLAYER_START, {"name" : name, "uri" : location.href});
+		internal_bind_event(Simplify.MESSAGE_DID_REQUEST_GOD, function() { internal_flush_offline_cache(); });
+		internal_send(Simplify.MESSAGE_PLAYER_START, {"name" : name, "uri" : location.hostname});
 	}
 
 	//Current player was closed 
