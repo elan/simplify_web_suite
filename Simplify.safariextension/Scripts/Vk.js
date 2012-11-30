@@ -3,8 +3,15 @@
 if (window.top == window)
 {
 	//Setting up current player and listeners on page load
-	window.addEventListener("load", function()
+	var setupSimpify = function()
 	{
+		if (typeof audioPlayer == "undefined")
+		{
+			console.log("Waiting for audio player to be available...");
+			setTimeout(setupSimpify, 5000);
+			return;
+		}
+
 		//Creating Simplify object 
 		var simplify = new Simplify();
 
@@ -140,6 +147,7 @@ if (window.top == window)
 		{
 			simplify.closeCurrentPlayer();
 		}); 
-	});
+	};
 
+	window.addEventListener("load", setupSimpify);
 }
