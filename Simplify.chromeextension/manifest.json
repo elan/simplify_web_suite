@@ -1,0 +1,19 @@
+{
+	"name" : "Simplify",
+	"version" : "1.0",
+	"manifest_version" : 2,
+	"description" : "Simplify for web players: Pandora, Deezer, Vk.",
+
+	"content_scripts" : [
+		{
+			"run_at"  : "document_end",
+			"matches" : ["http://*/*", "https://*/*"],
+			"js" 		 : ["extensions.js"]
+		}
+	],
+
+	"web_accessible_resources" : ["core/simplify.js", 
+											"core/players/vk.js", 
+											"core/players/deezer.js", 
+											"core/players/pandora.js"]
+}
