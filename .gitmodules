@@ -1,0 +1,3 @@
+[submodule "Simplify.safariextension/core"]
+	path = Simplify.safariextension/core
+	url = https://github.com/mmth/simplify_web_suite_core.git
