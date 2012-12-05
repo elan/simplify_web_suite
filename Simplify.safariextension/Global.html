@@ -18,14 +18,14 @@
 			}
 
 			//Loading Simplify base class
-			inject_script("Scripts/Simplify.js", vk_sites.concat(deezer_sites).concat(pandora_sites));
+			inject_script("core/simplify.js", vk_sites.concat(deezer_sites).concat(pandora_sites));
 
 			//Handling Vkontakte music player 
-			inject_script("Scripts/Vk.js", vk_sites);
+			inject_script("core/players/vk.js", vk_sites);
 			//Handling Deezer player
-			inject_script("Scripts/Deezer.js", deezer_sites);
+			inject_script("core/players/deezer.js", deezer_sites);
 			//Handling Pandora player
-			inject_script("Scripts/Pandora.js", pandora_sites);
+			inject_script("core/players/pandora.js", pandora_sites);
 		</script>
 	</head>
 </html>
