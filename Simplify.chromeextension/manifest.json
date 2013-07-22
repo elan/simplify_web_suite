@@ -1,8 +1,9 @@
 {
 	"name" : "Simplify",
 	"version" : "1.0",
-	"manifest_version" : 2,
-	"description" : "Simplify for web players: Pandora, Deezer, Vk.",
+	"manifest_version" : 3,
+	"description" : "Simplify for web players: Pandora, Deezer, Vk.,
+        SoundCloud",
 
 	"content_scripts" : [
 		{
@@ -15,5 +16,6 @@
 	"web_accessible_resources" : ["core/simplify.js", 
 											"core/players/vk.js", 
 											"core/players/deezer.js", 
-											"core/players/pandora.js"]
+											"core/players/pandora.js", 
+											"core/players/soundcloud.js"]
 }
