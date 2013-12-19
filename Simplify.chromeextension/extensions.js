@@ -3,7 +3,8 @@ var scripts = {
 	"vk.com" : "core/players/vk.js", 
 	"deezer.com" : "core/players/deezer.js",
 	"pandora.com" : "core/players/pandora.js",
-	"soundcloud.com" : "core/players/soundcloud.js"
+	"soundcloud.com" : "core/players/soundcloud.js",
+	"feedwrangler.net" : "core/players/podwrangler.js"
 };
 
 //Checking if current site is listed

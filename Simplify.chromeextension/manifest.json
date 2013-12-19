@@ -17,5 +17,6 @@
 											"core/players/vk.js", 
 											"core/players/deezer.js", 
 											"core/players/pandora.js", 
-											"core/players/soundcloud.js"]
+											"core/players/soundcloud.js",
+											"core/players/podwrangler.js"]
 }
