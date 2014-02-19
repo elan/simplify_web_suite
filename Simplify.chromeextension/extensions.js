@@ -4,6 +4,7 @@ var scripts = {
 	"deezer.com" : "core/players/deezer.js",
 	"pandora.com" : "core/players/pandora.js",
 	"soundcloud.com" : "core/players/soundcloud.js",
+	"8tracks.com" : "core/players/8tracks.js",
 	"feedwrangler.net" : "core/players/podwrangler.js"
 };
 
