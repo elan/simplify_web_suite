@@ -18,5 +18,6 @@
 											"core/players/pandora.js", 
 											"core/players/soundcloud.js",
 											"core/players/8tracks.js",
-											"core/players/podwrangler.js"]
+											"core/players/podwrangler.js",
+											"core/players/rdio.js"]
 }

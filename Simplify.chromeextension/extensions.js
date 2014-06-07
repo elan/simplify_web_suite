@@ -5,7 +5,8 @@ var scripts = {
 	"pandora.com" : "core/players/pandora.js",
 	"soundcloud.com" : "core/players/soundcloud.js",
 	"8tracks.com" : "core/players/8tracks.js",
-	"feedwrangler.net" : "core/players/podwrangler.js"
+	"feedwrangler.net" : "core/players/podwrangler.js",
+	"rdio.com" : "core/players/rdio.js"
 };
 
 //Checking if current site is listed
