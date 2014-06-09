@@ -7,6 +7,7 @@
 			var vk_sites = ["http://vk.com/*", "https://vk.com/*"];
 			var deezer_sites = ["http://deezer.com/*", "http://www.deezer.com/*"];
 			var pandora_sites = ["http://pandora.com/*", "http://www.pandora.com/*"];
+			var rdio_sites = ["http://rdio.com/*", "http://www.rdio.com/*"];
 
 			//Injecting script to the page to access page-defined variables and functions
 			var inject_script = function(uri, whitelist)
@@ -18,7 +19,7 @@
 			}
 
 			//Loading Simplify base class
-			inject_script("core/simplify.js", vk_sites.concat(deezer_sites).concat(pandora_sites));
+			inject_script("core/simplify.js", vk_sites.concat(deezer_sites).concat(pandora_sites).concat(rdio_sites));
 
 			//Handling Vkontakte music player 
 			inject_script("core/players/vk.js", vk_sites);
@@ -26,6 +27,8 @@
 			inject_script("core/players/deezer.js", deezer_sites);
 			//Handling Pandora player
 			inject_script("core/players/pandora.js", pandora_sites);
+			//Handling Rdio player
+			inject_script("core/players/rdio.js", rdio_sites);
 		</script>
 	</head>
 </html>
