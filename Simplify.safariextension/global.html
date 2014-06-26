@@ -3,14 +3,19 @@
 	<head>
 		<script type="text/javascript" src="safari-extension://Scripts/Simplify.js"></script>
 		<script type="text/javascript">
-			//Storing urls of application that we want to handle
-			var vk_sites = ["http://vk.com/*", "https://vk.com/*"];
-			var deezer_sites = ["http://deezer.com/*", "http://www.deezer.com/*"];
-			var pandora_sites = ["http://pandora.com/*", "http://www.pandora.com/*"];
-			var rdio_sites = ["http://rdio.com/*", "http://www.rdio.com/*"];
+			var players = 
+			{
+				"vk.js" : ["http://vk.com/*", "https://vk.com/*"],
+				 "deezer.js" : ["http://deezer.com/*", "http://www.deezer.com/*"],
+				 "pandora.js" : ["http://pandora.com/*", "http://www.pandora.com/*"],
+				 "rdio.js" : ["http://rdio.com/*", "http://www.rdio.com/*"],
+				 "soundcloud.js" : ["http://soundcloud.com/*", "https://soundcloud.com/*"],
+				 "8tracks.js" : ["http://8tracks.com/*", "https://8tracks.com/*"],
+				 "yamusic.js" : ["http://8tracks.com/*", "https://8tracks.com/*"],
+				 //"google-music.js" : ["http://play.google.com/music/*", "https://play.google.com/music/*"]
+			};
 
-			//Injecting script to the page to access page-defined variables and functions
-			var inject_script = function(uri, whitelist)
+			var injectScript = function(uri, whitelist)
 			{
 				safari.extension.addContentScript("var script = document.createElement('script');\
 														  script.type = 'text/javascript';\
@@ -18,17 +23,30 @@
 														  document.body.appendChild(script);", whitelist, [], true);
 			}
 
-			//Loading Simplify base class
-			inject_script("core/simplify.js", vk_sites.concat(deezer_sites).concat(pandora_sites).concat(rdio_sites));
+			var getAllSites = function(players_list)
+			{
+				var all_sites = [];
 
-			//Handling Vkontakte music player 
-			inject_script("core/players/vk.js", vk_sites);
-			//Handling Deezer player
-			inject_script("core/players/deezer.js", deezer_sites);
-			//Handling Pandora player
-			inject_script("core/players/pandora.js", pandora_sites);
-			//Handling Rdio player
-			inject_script("core/players/rdio.js", rdio_sites);
+				for (var title in players_list)
+				{
+					all_sites = all_sites.concat(players_list[title]);
+				}
+
+				return all_sites;
+			}
+
+			var prepareAllPlayers = function(players_list)
+			{
+				//Loading Simplify base class
+				injectScript("core/simplify.js", getAllSites(players_list));
+
+				for (var title in players_list)
+				{
+					injectScript("core/players/" + title, players_list[title]);
+				}
+			}
+
+			prepareAllPlayers(players);
 		</script>
 	</head>
 </html>
