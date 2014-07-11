@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Semibold Mammoth</string>
 	<key>Builder Version</key>
-	<string>9537.76.4</string>
+	<string>9537.77.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>Simplify</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.2</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>1.2</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
@@ -27,7 +27,7 @@
 		<dict/>
 	</dict>
 	<key>Description</key>
-	<string>Simplify for Web Players</string>
+	<string>Use with Simplify to control web-players (Pandora, Deezer, Vk) and scrobble from them.</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>
@@ -40,7 +40,9 @@
 			<string>All</string>
 		</dict>
 	</dict>
+	<key>Update Manifest URL</key>
+	<string>http://mmth.us/simplify/extension/safari/update.plist</string>
 	<key>Website</key>
-	<string>http://mmth.us/factory/simplify/</string>
+	<string>http://mmth.us/simplify/</string>
 </dict>
 </plist>
