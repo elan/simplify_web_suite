@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Semibold Mammoth</string>
 	<key>Builder Version</key>
-	<string>9537.77.4</string>
+	<string>10600.2.5</string>
 	<key>CFBundleDisplayName</key>
 	<string>Simplify</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.4.2</string>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>1.4.2</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
@@ -28,6 +28,8 @@
 	</dict>
 	<key>Description</key>
 	<string>Use with Simplify to control web-players (Pandora, Deezer, Vk) and scrobble from them.</string>
+	<key>DeveloperIdentifier</key>
+	<string>2CN7JP69CJ</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>
