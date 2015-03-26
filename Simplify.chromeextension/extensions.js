@@ -3,6 +3,7 @@ var scripts = {
 	"vk.com" : "core/players/vk.js", 
 	"deezer.com" : "core/players/deezer.js",
 	"pandora.com" : "core/players/pandora.js",
+  "plex.tv" : "core/players/plex.js",
 	"soundcloud.com" : "core/players/soundcloud.js",
 	"8tracks.com" : "core/players/8tracks.js",
 	"feedwrangler.net" : "core/players/podwrangler.js",
